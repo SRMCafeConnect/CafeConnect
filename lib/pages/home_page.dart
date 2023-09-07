@@ -1,28 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badge;
 import '../components/cafe_menu_tile.dart';
 import '../model/cart_model.dart';
 import 'cart_page.dart';
+import 'navbar.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final user = FirebaseAuth.instance.currentUser!;
 
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.grey[900],
         floatingActionButton: FloatingActionButton(
           onPressed: () =>
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return CartPage();
+            return const CartPage();
           })),
           backgroundColor: Colors.black,
           child: badge.Badge(
@@ -40,32 +37,28 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        appBar: AppBar(backgroundColor: Colors.grey[800], actions: [
-          IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))
-        ]),
+        // appBar: AppBar(backgroundColor: Colors.grey[800], actions: [
+        //   IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))
+        // ]),
+
+        bottomNavigationBar: const BottomNavbar(
+          pageindex: 0,
+        ),
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
               // Let's order something
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Text(
-                  "Enjoy your hassle free order experience",
-                  style: GoogleFonts.notoSerif(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              Image.asset('lib/images/cafebackground.jpeg'),
 
               // Menu
               const SizedBox(height: 24),
 
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 24.0),
-                child: Text("Today's menu", style: TextStyle(fontSize: 16)),
+                child: Text("Today's menu",
+                    style: TextStyle(fontSize: 16, color: Colors.grey)),
               ),
 
               const SizedBox(height: 24),
@@ -85,7 +78,7 @@ class HomePage extends StatelessWidget {
                           itemName: value.shopItems[index][0],
                           itemPrice: value.shopItems[index][1],
                           imagePath: value.shopItems[index][2],
-                          color: value.shopItems[index][3],
+                          isVeg: value.shopItems[index][3],
                           onPressed: () {
                             Provider.of<CartModel>(context, listen: false)
                                 .addItemToCart(index);
